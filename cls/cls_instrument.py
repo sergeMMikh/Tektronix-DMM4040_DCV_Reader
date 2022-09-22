@@ -5,16 +5,8 @@ import pyvisa as visa
 class DeviceM:
     instrument_is_open = False
 
-    def __init__(self, cfg_file: str):
-        path = str(Path(__file__))
-
-        full_path = path[:-17] + cfg_file
-        print(f'full_path: {full_path}')
-
-        with open(full_path) as f:
-            self.instrument_idn = f.read().strip()
-
-            print(f'Setup id: {self.instrument_idn}')
+    def __init__(self, instrument_idn: str):
+        self.instrument_idn = instrument_idn
 
         self.instrument = str()
         self.idn = 'Error'
@@ -22,8 +14,11 @@ class DeviceM:
         self.rm = visa.ResourceManager("@py")
         self.rm.list_resources()
 
+        print(f'instrument_idn: {self.instrument_idn}')
+
         if self.open_instrument() != 'Ok':
             self.idn = 'Error'
+            print('Error in open instrument.')
         else:
             self.idn = self.query("*IDN?")
             print(self.idn)
@@ -60,12 +55,6 @@ class DeviceM:
         return 'Ok'
 
     def close_instrument(self):
-        try:
-            self.instrument.write("ROUTe:MONitor:STATe ON")
-            self.instrument.write("DISPlay:TEXT:CLEar")
-        except visa.VisaIOError as e:
-            print(e.args)
-            self.close_instrument()
         self.instrument.close()
         self.instrument_is_open = False
 

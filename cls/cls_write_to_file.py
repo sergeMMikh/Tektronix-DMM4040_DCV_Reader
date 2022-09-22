@@ -9,7 +9,8 @@ class WriteToFile:
     def __init__(self, folder_path: str):
         path = str(Path(__file__))
 
-        self.full_path = path[:-24] + folder_path
+        # self.full_path = path[:-24] + folder_path
+        self.full_path = f'.\\{folder_path}'
         print(f'full_path: {self.full_path}')
 
         if not os.path.isdir(self.full_path):
